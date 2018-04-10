@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>JS Drum Kit</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+
+  <div class="keys">
+    <div data-key="65" class="key">
+      <kbd>A</kbd>
+      <span class="sound">clap</span>
+    </div>
+    <div data-key="83" class="key">
+      <kbd>S</kbd>
+      <span class="sound">hihat</span>
+    </div>
+    <div data-key="68" class="key">
+      <kbd>D</kbd>
+      <span class="sound">kick</span>
+    </div>
+    <div data-key="70" class="key">
+      <kbd>F</kbd>
+      <span class="sound">openhat</span>
+    </div>
+    <div data-key="71" class="key">
+      <kbd>G</kbd>
+      <span class="sound">boom</span>
+    </div>
+    <div data-key="72" class="key">
+      <kbd>H</kbd>
+      <span class="sound">ride</span>
+    </div>
+    <div data-key="74" class="key">
+      <kbd>J</kbd>
+      <span class="sound">snare</span>
+    </div>
+    <div data-key="75" class="key">
+      <kbd>K</kbd>
+      <span class="sound">tom</span>
+    </div>
+    <div data-key="76" class="key">
+      <kbd>L</kbd>
+      <span class="sound">tink</span>
+    </div>
+  </div>
+
+  <audio data-key="65" src="sounds/clap.wav"></audio>
+  <audio data-key="83" src="sounds/hihat.wav"></audio>
+  <audio data-key="68" src="sounds/kick.wav"></audio>
+  <audio data-key="70" src="sounds/openhat.wav"></audio>
+  <audio data-key="71" src="sounds/boom.wav"></audio>
+  <audio data-key="72" src="sounds/ride.wav"></audio>
+  <audio data-key="74" src="sounds/snare.wav"></audio>
+  <audio data-key="75" src="sounds/tom.wav"></audio>
+  <audio data-key="76" src="sounds/tink.wav"></audio>
+
+<script>
+  window.addEventListener('keydown', function(e){
+	//取得tag audio裡面的data-key的值
+    let audio = document.querySelector(`audio[data-key="${e.keyCode}"]`);
+	//取得tag div裡面的data-key的值
+    let key = document.querySelector(`.key[data-key="${e.keyCode}"]`);
+	//如果按下去是有設定的按鍵
+    if (key){
+	   //如果key裡面沒有down這個class
+	  if(key.classList.contains("down")=== false){
+	    //在按下去的那格撥放音訊
+	    key.classList.add('playing');
+	    //在每次音訊撥放之前將音訊從0開始，因為如果使用pause，下一次撥放音訊會從pause的地方開始
+	    audio.currentTime = 0;
+	    //播放音訊  
+        audio.play();
+	    //把down加入class
+	    key.classList.add("down");
+	  
+	  
+	 }
+
+	
+	}
+
+
+  
+  });
+  window.addEventListener("keyup",function(e){
+	let key = document.querySelector(`.key[data-key="${e.keyCode}"]`);
+	//如果放開按下的按鍵
+	if(key){
+	//如果要讓按鍵按下去可以連續觸發又不會remove不掉class的話，可以把加入class down有關的程式註解掉，取消下面那個註解
+	//key.classList.remove("playing");
+	
+	//刪除down這個class
+	key.classList.remove("down");
+	
+	}
+  
+  })
+  
+  //將選擇出來的.key的資料塞入陣列，querySelectorAll篩選出來的東西是偽陣列
+  let keys = Array.from(document.querySelectorAll('.key'))
+  //將陣列篩選出來的東西用forEach一個一個抓出來執行事件
+  keys.forEach(key => key.addEventListener('transitionend', function(e){
+     //在動畫播放完畢的時候移除class
+	 if (e.propertyName === 'transform'){
+		this.classList.remove('playing');
+	 }
+  
+  }));
+
+</script>
+
+
+</body>
+</html>
